@@ -462,8 +462,9 @@ CREATE TABLE living_profiles (
 ## Links
 
 - **Supabase Dashboard:** https://supabase.com/dashboard/project/haxmhcrsmqvwseseddri
-- **GitHub Repo:** [TBD]
-- **Production URL:** [TBD]
+- **GitHub Repo:** https://github.com/Orbita-Code/memorijalna-platforma
+- **Production URL:** https://memorials.orbitacode.com
+- **Coolify Dashboard:** https://deploy.orbitacode.com
 
 ---
 

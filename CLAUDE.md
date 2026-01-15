@@ -18,7 +18,8 @@
 ### 1.2 Status projekta
 - **Faza:** MVP završen (Phase 12 Complete)
 - **Verzija:** 0.0.0 (pre-release)
-- **Domen:** NIJE ODREĐEN - može se koristiti subdomen od orbitacode.we agencije
+- **Production URL:** https://memorials.orbitacode.com
+- **GitHub:** https://github.com/Orbita-Code/memorijalna-platforma
 - **Ime:** Radni naziv "Memorijalna Platforma" - finalno ime nije određeno
 
 ### 1.3 Vlasnik projekta
@@ -79,13 +80,13 @@ Sve tabele su kreirane u Supabase:
   - Video: MP4, WebM, QuickTime (max 100MB)
   - Dokumenti: PDF (max 20MB)
 
-### 3.4 Hosting plan
-| Komponenta | Servis | Status |
-|------------|--------|--------|
-| Server | Hetzner | Dostupan |
-| Git repo | GitHub | Aktivan |
-| Deployment | Coolify | Spreman za konfiguraciju |
-| Domen | TBD | Može subdomen orbitacode.we |
+### 3.4 Hosting (Production)
+| Komponenta | Servis | Detalji |
+|------------|--------|---------|
+| Server | Hetzner | Aktivan |
+| Git repo | GitHub | github.com/Orbita-Code/memorijalna-platforma |
+| Deployment | Coolify | deploy.orbitacode.com |
+| Production URL | - | https://memorials.orbitacode.com |
 
 ---
 
