@@ -402,23 +402,73 @@ NODE_ENV=production
 
 ## 12. BUDUĆI RAZVOJ (TODO)
 
-### 12.1 Prioritetno
+### 12.1 Sigurnost (KRITIČNO)
+- [x] Supabase RLS (Row Level Security) - implementirano
+- [ ] Security Headers (dodati u Coolify/Nginx):
+  - [ ] Content-Security-Policy (CSP)
+  - [ ] X-Content-Type-Options: nosniff
+  - [ ] X-Frame-Options: DENY
+  - [ ] X-XSS-Protection: 1; mode=block
+  - [ ] Referrer-Policy: strict-origin-when-cross-origin
+  - [ ] Permissions-Policy
+- [ ] Rate Limiting (Supabase Edge Functions ili Cloudflare)
+- [ ] CORS konfiguracija (Supabase dashboard)
+- [ ] Input sanitizacija (XSS zaštita) - pregled svih formi
+- [ ] SQL Injection zaštita - Supabase automatski štiti
+- [ ] CSRF zaštita
+- [ ] Secure cookies (HttpOnly, Secure, SameSite)
+
+### 12.2 SEO & Pristupačnost
+- [ ] Sitemap.xml (automatski generisan)
+- [ ] robots.txt
+- [ ] Meta tags (title, description) za svaku stranicu
+- [ ] Open Graph tags (og:title, og:image, og:description)
+- [ ] Twitter Card tags
+- [ ] Canonical URLs
+- [ ] Strukturirani podaci (Schema.org - Person, Article)
+- [ ] Alt tekstovi za sve slike
+- [ ] ARIA labels gde nedostaju
+
+### 12.3 Pravni zahtevi (GDPR/CCPA)
+- [ ] Privacy Policy stranica
+- [ ] Terms of Service stranica
+- [ ] Cookie Policy & Cookie banner
+- [ ] Pravo na brisanje podataka (GDPR čl. 17)
+- [ ] Data export funkcionalnost
+- [ ] Consent management
+- [ ] DPA (Data Processing Agreement) za Supabase
+
+### 12.4 Prioritetno (Funkcionalnost)
 - [ ] Finalno ime i domen platforme
 - [ ] Produkcijski Stripe ključevi
-- [ ] Email notifikacije
-- [ ] SEO optimizacija (meta tags, OG)
+- [ ] Email notifikacije (Supabase Edge Functions + Resend/SendGrid)
+- [ ] Email verifikacija korisnika
+- [ ] Password reset funkcionalnost
+- [ ] 2FA (Two-Factor Authentication)
 
-### 12.2 Planirano
+### 12.5 Planirano
 - [ ] QR kod za memorijal (za nadgrobni spomenik)
-- [ ] Društvene mreže integracija
-- [ ] Premium planovi
+- [ ] Društvene mreže integracija (share buttons)
+- [ ] Premium planovi (Stripe Subscriptions)
 - [ ] Admin dashboard
-- [ ] Statistika posjeta
+- [ ] Statistika posjeta (Plausible/Umami - GDPR compliant)
+- [ ] Backup strategija (automatski Supabase backups)
+- [ ] CDN za medije (Cloudflare ili Supabase CDN)
+- [ ] Image optimization (WebP konverzija)
 
-### 12.3 Nice-to-have
+### 12.6 Monitoring & Logging
+- [ ] Error tracking (Sentry)
+- [ ] Performance monitoring
+- [ ] Uptime monitoring (UptimeRobot, Betterstack)
+- [ ] Audit log za admin akcije
+- [ ] Security incident response plan
+
+### 12.7 Nice-to-have
 - [ ] PWA podrška
 - [ ] Offline mode
 - [ ] Native mobile app
+- [ ] API za integracije (pogrebna preduzeća)
+- [ ] Bulk import memorijala
 
 ---
 
