@@ -1,4 +1,5 @@
-import { useState, FormEvent } from 'react'
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import type { GiftProduct } from '../types/gift'
 import { formatPrice } from '../lib/giftCatalog'
 import { createGift } from '../lib/gifts'
@@ -17,7 +18,7 @@ export default function GiftModal({
   memorialId,
   isOpen,
   onClose,
-  onPurchaseComplete,
+  onPurchaseComplete: _onPurchaseComplete,
 }: GiftModalProps) {
   const [senderName, setSenderName] = useState('')
   const [senderMessage, setSenderMessage] = useState('')

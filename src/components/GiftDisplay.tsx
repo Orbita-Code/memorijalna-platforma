@@ -1,4 +1,4 @@
-import type { Gift, GiftProduct } from '../types/gift'
+import type { Gift } from '../types/gift'
 import { getProductById } from '../lib/giftCatalog'
 
 interface GiftDisplayProps {

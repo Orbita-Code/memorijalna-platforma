@@ -243,11 +243,8 @@ export async function activateProfile(
     return { data: null, error: new Error('Pogresna tajna fraza') }
   }
 
-  // Check if activator is authorized family member
-  const activator = (profile.family_members || []).find(
-    (m: FamilyMember) => m.can_activate
-  )
   // For MVP, we allow activation if secret phrase matches
+  // TODO: In production, check if activator is authorized family member
 
   // Create memorial from living profile
   const { data: memorial, error: createError } = await createMemorial(

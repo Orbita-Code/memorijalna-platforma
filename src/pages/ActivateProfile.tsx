@@ -1,5 +1,6 @@
-import { useState, useEffect, FormEvent } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import type { FormEvent } from 'react'
+import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { getLivingProfileById, activateProfile } from '../lib/livingProfiles'
 import type { LivingProfile } from '../types/livingProfile'
@@ -7,7 +8,6 @@ import type { LivingProfile } from '../types/livingProfile'
 export default function ActivateProfile() {
   const { id } = useParams<{ id: string }>()
   const { session } = useAuth()
-  const navigate = useNavigate()
   const [profile, setProfile] = useState<LivingProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [activating, setActivating] = useState(false)

@@ -1,4 +1,5 @@
-import { useState, useRef, DragEvent, ChangeEvent } from 'react'
+import { useState, useRef } from 'react'
+import type { DragEvent, ChangeEvent } from 'react'
 import { validateFile, getMediaType } from '../lib/storage'
 import { addMedia } from '../lib/media'
 import { useAuth } from '../contexts/AuthContext'

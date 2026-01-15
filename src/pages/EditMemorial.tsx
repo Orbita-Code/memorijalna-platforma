@@ -1,4 +1,5 @@
-import { useState, useEffect, FormEvent, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import type { FormEvent } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { getMemorialById, updateMemorial } from '../lib/memorials'

@@ -22,7 +22,7 @@ export async function createCheckoutUrl(
   memorialId: string,
   giftId: string,
   successUrl: string,
-  cancelUrl: string
+  _cancelUrl: string
 ): Promise<string | null> {
   // For MVP: Return null and use a simulated payment flow
   // In production: Call Supabase Edge Function to create Checkout Session

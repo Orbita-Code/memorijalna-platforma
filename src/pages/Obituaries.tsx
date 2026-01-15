@@ -40,7 +40,7 @@ export default function Obituaries() {
   const locations = [...new Set(
     obituaries
       .map(o => o.place_of_death || o.funeral_location)
-      .filter(Boolean)
+      .filter((loc): loc is string => Boolean(loc))
   )].slice(0, 10)
 
   if (loading) {
