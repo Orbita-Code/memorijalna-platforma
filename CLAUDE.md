@@ -403,7 +403,7 @@ NODE_ENV=production
 ## 12. BUDUĆI RAZVOJ (TODO)
 
 ### 12.1 Sigurnost (KRITIČNO)
-- [x] Supabase RLS (Row Level Security) - implementirano
+- [x] Supabase RLS (Row Level Security) - KOMPLETNO (sve tabele zaštićene)
 - [ ] Security Headers (dodati u Coolify/Nginx):
   - [ ] Content-Security-Policy (CSP)
   - [ ] X-Content-Type-Options: nosniff
@@ -494,3 +494,23 @@ Ovaj dokument prati verziju projekta.
 > 3. Testiraj promene lokalno pre commit-a
 > 4. Prati postojeću strukturu i konvencije
 > 5. Dokumentuj sve značajne promene
+
+---
+
+## 15. PRAVILA ZA BROWSER AUTOMATION
+
+**STROGO ZABRANJENO:**
+- Otvaranje više od 1 taba
+- Retry ako browser javi bilo kakvu grešku
+- Korišćenje `pkill` za zatvaranje browsera (prekida rad drugih agenata!)
+- Automatsko otvaranje browsera bez eksplicitnog zahteva korisnika
+
+**Ako dobiješ grešku "Browser is already in use" ili bilo koju drugu browser grešku:**
+1. **ODMAH STANI** - ne pokušavaj ponovo
+2. Obavesti korisnika o problemu
+3. Ponudi opcije:
+   - "Možeš li zatvoriti tab sa [URL] u svom browseru?"
+   - "Možeš li ti otvoriti [URL] i uraditi [akciju]?"
+   - "Želiš li da ti dam instrukcije koje možeš ručno pratiti?"
+
+**NIKADA ne pokušavaj više od 1 put da otvoriš stranicu. Ako ne uspe - pitaj korisnika za pomoć.**

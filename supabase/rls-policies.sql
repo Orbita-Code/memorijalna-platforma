@@ -13,11 +13,11 @@
 -- Omogući RLS
 ALTER TABLE memorials ENABLE ROW LEVEL SECURITY;
 
--- Svi mogu čitati aktivne memorijale (is_active = true)
--- Vlasnik može videti i svoje draft memorijale
-CREATE POLICY "Aktivni memorijali su vidljivi svima"
+-- Svi mogu čitati javne memorijale (is_public = true)
+-- Vlasnik može videti i svoje privatne memorijale
+CREATE POLICY "Javni memorijali su vidljivi svima"
 ON memorials FOR SELECT
-USING (is_active = true OR auth.uid() = user_id);
+USING (is_public = true OR auth.uid() = user_id);
 
 -- Samo vlasnik može kreirati
 CREATE POLICY "Korisnici mogu kreirati svoje memorijale"
@@ -41,14 +41,14 @@ USING (auth.uid() = user_id);
 
 ALTER TABLE media ENABLE ROW LEVEL SECURITY;
 
--- Svi mogu videti medije aktivnih memorijala
-CREATE POLICY "Mediji aktivnih memorijala su vidljivi"
+-- Svi mogu videti medije javnih memorijala
+CREATE POLICY "Mediji javnih memorijala su vidljivi"
 ON media FOR SELECT
 USING (
   EXISTS (
     SELECT 1 FROM memorials
     WHERE memorials.id = media.memorial_id
-    AND (memorials.is_active = true OR memorials.user_id = auth.uid())
+    AND (memorials.is_public = true OR memorials.user_id = auth.uid())
   )
 );
 
@@ -136,14 +136,14 @@ USING (
 
 ALTER TABLE gifts ENABLE ROW LEVEL SECURITY;
 
--- Pokloni su vidljivi na aktivnim memorijalima
-CREATE POLICY "Pokloni su vidljivi na aktivnim memorijalima"
+-- Pokloni su vidljivi na javnim memorijalima
+CREATE POLICY "Pokloni su vidljivi na javnim memorijalima"
 ON gifts FOR SELECT
 USING (
   EXISTS (
     SELECT 1 FROM memorials
     WHERE memorials.id = gifts.memorial_id
-    AND (memorials.is_active = true OR memorials.user_id = auth.uid())
+    AND (memorials.is_public = true OR memorials.user_id = auth.uid())
   )
 );
 
