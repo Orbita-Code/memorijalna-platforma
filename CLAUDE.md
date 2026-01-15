@@ -85,8 +85,10 @@ Sve tabele su kreirane u Supabase:
 |------------|--------|---------|
 | Server | Hetzner | Aktivan |
 | Git repo | GitHub | github.com/Orbita-Code/memorijalna-platforma |
-| Deployment | Coolify | deploy.orbitacode.com |
+| Deployment | Coolify | panel.orbitacode.com |
 | Production URL | - | https://memorials.orbitacode.com |
+
+**Automatski deploy:** Coolify ima konfigurisan webhook - svaki push na `main` branch automatski pokreće novi deploy.
 
 ---
 
