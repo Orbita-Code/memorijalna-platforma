@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { createLivingProfile, getUserLivingProfile } from '../lib/livingProfiles'
 import type { CreateLivingProfileInput } from '../types/livingProfile'
+import SEO from '../components/SEO'
 
 export default function CreateLivingProfile() {
   const { session } = useAuth()
@@ -106,11 +107,16 @@ export default function CreateLivingProfile() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
-          Kreiraj moj zivotni profil
-        </h1>
+    <>
+      <SEO
+        title="Kreiraj Životni Profil"
+        description="Pripremite vaš memorijal dok ste još živi. Porodica će ga aktivirati kada dođe vreme. Tvoja Priča - kontrolišite svoje nasleđe."
+      />
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
+            Kreiraj moj zivotni profil
+          </h1>
         <p className="text-gray-600 text-center mb-6">
           Pripremite vas memorijal dok ste jos zivi. Porodica ce ga aktivirati kada dodje vreme.
         </p>
@@ -273,7 +279,8 @@ export default function CreateLivingProfile() {
             {loading ? 'Kreiranje...' : 'Kreiraj profil'}
           </button>
         </form>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

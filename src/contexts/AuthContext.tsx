@@ -57,11 +57,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await supabase.auth.signOut()
   }
 
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-lozinka`,
+    })
+    return { error: error as Error | null }
+  }
+
   const value: AuthContextType = {
     ...state,
     signUp,
     signIn,
     signOut,
+    resetPassword,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { getUserLivingProfile, updateLivingProfile, publishLivingProfile } from '../lib/livingProfiles'
 import type { LivingProfile as LivingProfileType, UpdateLivingProfileInput } from '../types/livingProfile'
 import FamilyMemberList from '../components/FamilyMemberList'
+import SEO from '../components/SEO'
 
 function formatDate(dateString: string | null | undefined): string {
   if (!dateString) return ''
@@ -131,14 +132,19 @@ export default function LivingProfile() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Moj zivotni profil
-            </h1>
+    <>
+      <SEO
+        title="Moj Životni Profil"
+        description="Upravljajte vašim životnim profilom. Pripremite memorijal dok ste još živi i kontrolišite kako želite da vas pamte."
+      />
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Moj zivotni profil
+              </h1>
             <p className="text-gray-600">
               {profile.status === 'draft' ? 'Nacrt - nije vidljiv drugima' : 'Aktivan profil'}
             </p>
@@ -312,7 +318,8 @@ export default function LivingProfile() {
             <p className="font-mono text-gray-800">{profile.activation_settings.secret_phrase}</p>
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

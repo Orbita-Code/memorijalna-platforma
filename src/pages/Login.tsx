@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import SEO from '../components/SEO'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -27,12 +28,17 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
-            Prijava
-          </h2>
+    <>
+      <SEO
+        title="Prijava - Pristupite svom nalogu"
+        description="Prijavite se na Memorial platformu da biste upravljali memorijalima, čituljem i digitalnim uspomenama vaših voljenih."
+      />
+      <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-lg shadow-md p-8">
+            <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
+              Prijava
+            </h2>
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
@@ -49,6 +55,7 @@ export default function Login() {
                 id="email"
                 type="email"
                 required
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -57,13 +64,22 @@ export default function Login() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Lozinka
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Lozinka
+                </label>
+                <Link
+                  to="/zaboravljena-lozinka"
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
+                  Zaboravili ste lozinku?
+                </Link>
+              </div>
               <input
                 id="password"
                 type="password"
                 required
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -89,5 +105,6 @@ export default function Login() {
         </div>
       </div>
     </div>
+    </>
   )
 }

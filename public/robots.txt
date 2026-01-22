@@ -1,0 +1,30 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://memorials.orbitacode.com/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /profil
+Disallow: /moj-profil
+Disallow: /kreiraj-memorijal
+Disallow: /memorijal/*/izmeni
+Disallow: /umrlica/nova
+Disallow: /aktiviraj/
+
+# Allow crawling of public pages
+Allow: /memorijali
+Allow: /memorijal/
+Allow: /umrlice
+Allow: /umrlica/
+Allow: /citulje
+Allow: /citulja/
+Allow: /pogrebna-preduzeca
+Allow: /groblja
+Allow: /kamenorezacke-radnje
+Allow: /qr-partneri
+Allow: /tvoja-prica
+Allow: /o-nama
+Allow: /faq
+Allow: /kontakt

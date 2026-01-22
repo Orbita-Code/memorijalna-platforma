@@ -1,8 +1,14 @@
 import { Link } from 'react-router-dom'
+import SEO from '../components/SEO'
 
 export default function NotFound() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16 text-center">
+    <>
+      <SEO
+        title="Stranica nije pronađena (404)"
+        description="Stranica koju tražite ne postoji ili je premeštena. Vratite se na početnu stranicu Memorijalne platforme."
+      />
+      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
       <h2 className="text-2xl font-bold text-gray-900 mb-4">
         Stranica nije pronađena
       </h2>
@@ -15,6 +21,7 @@ export default function NotFound() {
       >
         Nazad na početnu
       </Link>
-    </div>
+      </div>
+    </>
   )
 }

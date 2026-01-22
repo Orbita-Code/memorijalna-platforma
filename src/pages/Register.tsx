@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import SEO from '../components/SEO'
 
 export default function Register() {
   const { signUp } = useAuth()
@@ -43,6 +44,11 @@ export default function Register() {
 
   if (success) {
     return (
+      <>
+      <SEO
+        title="Registracija uspešna"
+        description="Vaš nalog je uspešno kreiran. Proverite email za potvrdu registracije na Memorial platformi."
+      />
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
           <h2 className="text-xl font-semibold text-green-800 mb-2">
@@ -59,15 +65,21 @@ export default function Register() {
           </Link>
         </div>
       </div>
+      </>
     )
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
-          Registracija
-        </h2>
+    <>
+      <SEO
+        title="Registracija - Kreirajte besplatan nalog"
+        description="Registrujte se besplatno na Memorial platformi. Kreirajte digitalne memorijale, objavite čitulje i sačuvajte uspomene na vaše voljene."
+      />
+      <div className="max-w-md mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
+            Registracija
+          </h2>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
@@ -86,6 +98,7 @@ export default function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="vasa@email.com"
             />
@@ -102,6 +115,7 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
+              autoComplete="new-password"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Najmanje 6 karaktera"
             />
@@ -118,6 +132,7 @@ export default function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               minLength={6}
+              autoComplete="new-password"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Ponovite lozinku"
             />
@@ -140,5 +155,6 @@ export default function Register() {
         </p>
       </div>
     </div>
+    </>
   )
 }

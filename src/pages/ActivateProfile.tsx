@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { getLivingProfileById, activateProfile } from '../lib/livingProfiles'
 import type { LivingProfile } from '../types/livingProfile'
+import SEO from '../components/SEO'
 
 export default function ActivateProfile() {
   const { id } = useParams<{ id: string }>()
@@ -136,13 +137,18 @@ export default function ActivateProfile() {
   }
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="text-center mb-6">
-          <div className="text-4xl mb-2">&#128591;</div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Aktivacija memorijala
-          </h1>
+    <>
+      <SEO
+        title="Aktivacija Memorijala"
+        description="Aktivirajte memorijal preminule osobe. Ova akcija konvertuje životni profil u javni memorijal."
+      />
+      <div className="max-w-xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="text-center mb-6">
+            <div className="text-4xl mb-2">&#128591;</div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Aktivacija memorijala
+            </h1>
           <p className="text-gray-600 mt-2">
             Aktivirajte memorijal za{' '}
             <span className="font-semibold">
@@ -226,7 +232,8 @@ export default function ActivateProfile() {
             {activating ? 'Aktivacija u toku...' : 'Aktiviraj memorijal'}
           </button>
         </form>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

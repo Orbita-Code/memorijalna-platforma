@@ -6,6 +6,7 @@ import { getMemorialById, updateMemorial } from '../lib/memorials'
 import { getPendingCommentsCount } from '../lib/comments'
 import type { UpdateMemorialInput, Memorial } from '../types/memorial'
 import ModerationQueue from '../components/ModerationQueue'
+import SEO from '../components/SEO'
 
 export default function EditMemorial() {
   const { id } = useParams<{ id: string }>()
@@ -20,10 +21,10 @@ export default function EditMemorial() {
   const [formData, setFormData] = useState<UpdateMemorialInput>({
     first_name: '',
     last_name: '',
-    date_of_birth: '',
-    date_of_death: '',
-    place_of_birth: '',
-    place_of_death: '',
+    birth_date: '',
+    death_date: '',
+    birth_place: '',
+    death_place: '',
     father_name: '',
     mother_name: '',
     biography: '',
@@ -62,10 +63,10 @@ export default function EditMemorial() {
       setFormData({
         first_name: data.first_name,
         last_name: data.last_name,
-        date_of_birth: data.date_of_birth,
-        date_of_death: data.date_of_death,
-        place_of_birth: data.place_of_birth,
-        place_of_death: data.place_of_death,
+        birth_date: data.birth_date || '',
+        death_date: data.death_date || '',
+        birth_place: data.birth_place || '',
+        death_place: data.death_place || '',
         father_name: data.father_name || '',
         mother_name: data.mother_name || '',
         biography: data.biography || '',
@@ -110,26 +111,26 @@ export default function EditMemorial() {
       setError('Prezime je obavezno')
       return
     }
-    if (!formData.date_of_birth) {
+    if (!formData.birth_date) {
       setError('Datum rodjenja je obavezan')
       return
     }
-    if (!formData.date_of_death) {
+    if (!formData.death_date) {
       setError('Datum smrti je obavezan')
       return
     }
-    if (!formData.place_of_birth?.trim()) {
+    if (!formData.birth_place?.trim()) {
       setError('Mesto rodjenja je obavezno')
       return
     }
-    if (!formData.place_of_death?.trim()) {
+    if (!formData.death_place?.trim()) {
       setError('Mesto smrti je obavezno')
       return
     }
 
     // Validate dates
     if (
-      new Date(formData.date_of_death!) < new Date(formData.date_of_birth!)
+      new Date(formData.death_date!) < new Date(formData.birth_date!)
     ) {
       setError('Datum smrti ne moze biti pre datuma rodjenja')
       return
@@ -140,10 +141,10 @@ export default function EditMemorial() {
     const input: UpdateMemorialInput = {
       first_name: formData.first_name?.trim(),
       last_name: formData.last_name?.trim(),
-      date_of_birth: formData.date_of_birth,
-      date_of_death: formData.date_of_death,
-      place_of_birth: formData.place_of_birth?.trim(),
-      place_of_death: formData.place_of_death?.trim(),
+      birth_date: formData.birth_date,
+      death_date: formData.death_date,
+      birth_place: formData.birth_place?.trim(),
+      death_place: formData.death_place?.trim(),
       father_name: formData.father_name?.trim() || null,
       mother_name: formData.mother_name?.trim() || null,
       biography: formData.biography?.trim() || null,
@@ -195,10 +196,15 @@ export default function EditMemorial() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Izmeni memorijal</h1>
+    <>
+      <SEO
+        title="Izmeni Memorijal"
+        description="Uredite i ažurirajte memorijal. Dodajte nove fotografije, video snimke i ažurirajte biografiju."
+      />
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold text-gray-900">Izmeni memorijal</h1>
           <Link
             to={`/memorijal/${id}`}
             className="text-gray-500 hover:text-gray-700"
@@ -257,16 +263,16 @@ export default function EditMemorial() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
-                htmlFor="date_of_birth"
+                htmlFor="birth_date"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 Datum rodjenja *
               </label>
               <input
                 type="date"
-                id="date_of_birth"
-                name="date_of_birth"
-                value={formData.date_of_birth}
+                id="birth_date"
+                name="birth_date"
+                value={formData.birth_date ?? ''}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -275,16 +281,16 @@ export default function EditMemorial() {
 
             <div>
               <label
-                htmlFor="date_of_death"
+                htmlFor="death_date"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 Datum smrti *
               </label>
               <input
                 type="date"
-                id="date_of_death"
-                name="date_of_death"
-                value={formData.date_of_death}
+                id="death_date"
+                name="death_date"
+                value={formData.death_date ?? ''}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -295,16 +301,16 @@ export default function EditMemorial() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
-                htmlFor="place_of_birth"
+                htmlFor="birth_place"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 Mesto rodjenja *
               </label>
               <input
                 type="text"
-                id="place_of_birth"
-                name="place_of_birth"
-                value={formData.place_of_birth}
+                id="birth_place"
+                name="birth_place"
+                value={formData.birth_place ?? ''}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -314,16 +320,16 @@ export default function EditMemorial() {
 
             <div>
               <label
-                htmlFor="place_of_death"
+                htmlFor="death_place"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 Mesto smrti *
               </label>
               <input
                 type="text"
-                id="place_of_death"
-                name="place_of_death"
-                value={formData.place_of_death}
+                id="death_place"
+                name="death_place"
+                value={formData.death_place ?? ''}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -408,6 +414,28 @@ export default function EditMemorial() {
         </form>
       </div>
 
+      {/* Donation Settings Section */}
+      {id && (
+        <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 mb-1">
+                Podešavanje donacija
+              </h2>
+              <p className="text-gray-600 text-sm">
+                Omogućite posetiocima da pomognu porodici ili doniraju humanitarnoj organizaciji
+              </p>
+            </div>
+            <Link
+              to={`/memorijal/${id}/donacije`}
+              className="bg-sky hover:bg-sky-dark text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              Podesi donacije
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Comments Moderation Section */}
       {id && (
         <div className="bg-white rounded-lg shadow-md p-6 mt-6">
@@ -425,8 +453,9 @@ export default function EditMemorial() {
             memorialId={id}
             onUpdate={fetchPendingCount}
           />
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+    </>
   )
 }
