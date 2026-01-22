@@ -60,13 +60,13 @@ export default function DuplicateWarning({ matches, onProceed, onCancel }: Dupli
                       {match.memorial.first_name} {match.memorial.last_name}
                     </Link>
                     <p className="text-sm text-gray-600 mt-1">
-                      {match.memorial.date_of_birth && formatDate(match.memorial.date_of_birth)}
-                      {match.memorial.date_of_birth && ' - '}
-                      {formatDate(match.memorial.date_of_death)}
+                      {match.memorial.birth_date && formatDate(match.memorial.birth_date)}
+                      {match.memorial.birth_date && ' - '}
+                      {formatDate(match.memorial.death_date)}
                     </p>
-                    {match.memorial.place_of_death && (
+                    {match.memorial.death_place && (
                       <p className="text-sm text-gray-500">
-                        {match.memorial.place_of_death}
+                        {match.memorial.death_place}
                       </p>
                     )}
                     <div className="flex flex-wrap gap-1 mt-2">

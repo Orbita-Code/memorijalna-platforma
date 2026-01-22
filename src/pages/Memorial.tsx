@@ -1,19 +1,18 @@
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getMemorialById } from '../lib/memorials'
-import { getMemorialMedia, deleteMedia } from '../lib/media'
 import type { Memorial as MemorialType } from '../types/memorial'
-import type { MediaItem } from '../types/media'
 import { useAuth } from '../contexts/AuthContext'
-import PhotoGallery from '../components/PhotoGallery'
-import VideoPlayer from '../components/VideoPlayer'
-import DocumentList from '../components/DocumentList'
-import MediaUpload from '../components/MediaUpload'
 import BiographyDisplay from '../components/BiographyDisplay'
 import CommentList from '../components/CommentList'
 import CommentForm from '../components/CommentForm'
 import GiftDisplay from '../components/GiftDisplay'
 import GiftCatalog from '../components/GiftCatalog'
+import SEO from '../components/SEO'
+import ShareButtons from '../components/ShareButtons'
+import QRCodeGenerator from '../components/QRCodeGenerator'
+import { EternalFlame } from '../components/icons/ReligiousSymbols'
+import { FlowerIcon, CalendarIcon, LocationIcon, PhotoIcon, VideoIcon, LockIcon } from '../components/icons/FeatureIcons'
 import { getApprovedComments, getPendingCommentsCount } from '../lib/comments'
 import { getMemorialGifts, updateGiftPaymentStatus } from '../lib/gifts'
 import type { Comment } from '../types/comment'
@@ -23,25 +22,15 @@ export default function Memorial() {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuth()
   const [memorial, setMemorial] = useState<MemorialType | null>(null)
-  const [media, setMedia] = useState<MediaItem[]>([])
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
   const [commentsLoading, setCommentsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [showUpload, setShowUpload] = useState(false)
   const [showCommentForm, setShowCommentForm] = useState(false)
   const [pendingCommentsCount, setPendingCommentsCount] = useState(0)
   const [gifts, setGifts] = useState<Gift[]>([])
   const [showGiftPurchase, setShowGiftPurchase] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
-
-  const fetchMedia = useCallback(async () => {
-    if (!id) return
-    const { data: mediaData } = await getMemorialMedia(id)
-    if (mediaData) {
-      setMedia(mediaData)
-    }
-  }, [id])
 
   const fetchComments = useCallback(async () => {
     if (!id) return
@@ -75,23 +64,15 @@ export default function Memorial() {
         setError('Memorijal nije pronaden.')
       } else {
         setMemorial(data)
-        // Fetch media after memorial is loaded
-        const { data: mediaData } = await getMemorialMedia(id)
-        if (mediaData) {
-          setMedia(mediaData)
-        }
-        // Fetch comments
         const { data: commentsData } = await getApprovedComments(id)
         if (commentsData) {
           setComments(commentsData)
         }
         setCommentsLoading(false)
 
-        // Fetch pending count for owner
         const { count } = await getPendingCommentsCount(id)
         setPendingCommentsCount(count)
 
-        // Fetch gifts
         const { data: giftsData } = await getMemorialGifts(id)
         if (giftsData) {
           setGifts(giftsData)
@@ -108,51 +89,20 @@ export default function Memorial() {
     const giftId = urlParams.get('gift_id')
 
     if (payment === 'success' && giftId) {
-      // Update gift payment status
       updateGiftPaymentStatus(giftId, 'completed').then(() => {
         setPaymentSuccess(true)
-        // Refresh gifts
         if (id) {
           getMemorialGifts(id).then(({ data }) => {
             if (data) setGifts(data)
           })
         }
-        // Clear URL params
         window.history.replaceState({}, '', window.location.pathname)
-        // Clear success message after 5 seconds
         setTimeout(() => setPaymentSuccess(false), 5000)
       })
     }
   }, [id])
 
-  const handleUploadComplete = () => {
-    setShowUpload(false)
-    fetchMedia()
-  }
-
-  const handleDeleteMedia = async (mediaId: string, type?: string) => {
-    const messages: Record<string, string> = {
-      image: 'Da li ste sigurni da zelite da obrisete ovu fotografiju?',
-      video: 'Da li ste sigurni da zelite da obrisete ovaj video?',
-      document: 'Da li ste sigurni da zelite da obrisete ovaj dokument?',
-    }
-    const message = type ? messages[type] : messages.image
-    if (!confirm(message)) {
-      return
-    }
-    const { error: deleteError } = await deleteMedia(mediaId)
-    if (!deleteError) {
-      setMedia((prev) => prev.filter((m) => m.id !== mediaId))
-    }
-  }
-
-  // Check if current user is the memorial owner
   const isOwner = user && memorial && user.id === memorial.user_id
-
-  // Separate media by type
-  const images = useMemo(() => media.filter((m) => m.type === 'image'), [media])
-  const videos = useMemo(() => media.filter((m) => m.type === 'video'), [media])
-  const documents = useMemo(() => media.filter((m) => m.type === 'document'), [media])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('sr-Latn-RS', {
@@ -162,20 +112,24 @@ export default function Memorial() {
     })
   }
 
-  const formatShortDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('sr-Latn-RS', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    })
+  const formatYear = (dateString: string) => {
+    return new Date(dateString).getFullYear().toString()
   }
+
+  // Placeholder fotografije za demo
+  const placeholderPhotos = [
+    { id: 'ph-1', url: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=80', caption: 'Porodično okupljanje' },
+    { id: 'ph-2', url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&q=80', caption: 'Proslava rođendana' },
+    { id: 'ph-3', url: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&q=80', caption: 'Letovanje' },
+    { id: 'ph-4', url: 'https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=400&q=80', caption: 'Sa unucima' },
+  ]
 
   if (loading) {
     return (
-      <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
+      <div className="min-h-[calc(100vh-200px)] flex items-center justify-center bg-ivory">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Ucitavanje...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-sky border-t-transparent mx-auto mb-4"></div>
+          <p className="text-text-secondary">Učitavanje...</p>
         </div>
       </div>
     )
@@ -183,293 +137,338 @@ export default function Memorial() {
 
   if (error || !memorial) {
     return (
-      <div className="min-h-[calc(100vh-200px)] flex items-center justify-center">
+      <div className="min-h-[calc(100vh-200px)] flex items-center justify-center bg-ivory">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-400 mb-4">404</h1>
-          <p className="text-gray-600 text-lg">{error || 'Memorijal nije pronaden.'}</p>
+          <h1 className="heading-1 text-text-muted mb-4">Memorijal nije pronađen</h1>
+          <p className="text-text-secondary text-lg mb-6">{error || 'Stranica koju tražite ne postoji.'}</p>
+          <Link to="/memorijali" className="btn-primary">
+            Pretraži memorijale
+          </Link>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Cover Image */}
-      <div className="h-48 sm:h-64 md:h-80 relative overflow-hidden">
-        {memorial.cover_image_url ? (
-          <>
+    <div className="min-h-screen bg-ivory">
+      <SEO
+        title={`${memorial.first_name} ${memorial.last_name} - Memorijal`}
+        description={memorial.biography
+          ? `${memorial.biography.substring(0, 150)}...`
+          : `Digitalni memorijal za ${memorial.first_name} ${memorial.last_name}. Posetite i ostavite sveću, cveće ili poruku sećanja.`
+        }
+        image={memorial.profile_image_url || undefined}
+        type="profile"
+        person={{
+          name: `${memorial.first_name} ${memorial.last_name}`,
+          birthDate: memorial.birth_date || undefined,
+          deathDate: memorial.death_date || undefined,
+          birthPlace: memorial.birth_place || undefined,
+          deathPlace: memorial.death_place || undefined,
+          image: memorial.profile_image_url || undefined
+        }}
+      />
+
+      {/* Hero Section with Cover */}
+      <div className="relative">
+        {/* Cover Image */}
+        <div className="h-64 sm:h-80 lg:h-96 relative overflow-hidden">
+          {memorial.cover_image_url ? (
             <img
               src={memorial.cover_image_url}
               alt=""
               className="w-full h-full object-cover"
             />
-            {/* Gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
-          </>
-        ) : (
-          <div className="w-full h-full bg-gradient-to-b from-gray-300 to-gray-400">
-            <div className="absolute inset-0 bg-black/10"></div>
+          ) : (
+            /* Default gradient cover */
+            <div className="w-full h-full bg-gradient-to-b from-sky-light via-sand to-ivory" />
+          )}
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-ivory via-ivory/40 to-transparent" />
+        </div>
+
+        {/* Profile Image - Overlapping */}
+        <div className="absolute left-1/2 -translate-x-1/2 -bottom-20 sm:-bottom-24">
+          <div className="relative">
+            <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-sand border-4 border-white shadow-large overflow-hidden">
+              {memorial.profile_image_url ? (
+                <img
+                  src={memorial.profile_image_url}
+                  alt={`${memorial.first_name} ${memorial.last_name}`}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-sand-light">
+                  <EternalFlame size={48} className="text-rose" />
+                </div>
+              )}
+            </div>
+            {/* Religious Symbol Badge */}
+            <div className="absolute -bottom-1 -right-1 w-10 h-10 rounded-full bg-white shadow-soft flex items-center justify-center border border-border-light">
+              <EternalFlame size={20} className="text-rose" />
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-3xl mx-auto px-4 -mt-16 relative z-10 pb-12">
-        {/* Profile Section */}
-        <div className="text-center mb-8">
-          {/* Edit Button for Owner */}
-          {isOwner && (
-            <div className="flex justify-end mb-4">
-              <Link
-                to={`/memorijal/${memorial.id}/izmeni`}
-                className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white rounded-md shadow-sm hover:bg-gray-50 transition-colors border border-gray-200"
-              >
-                <svg
-                  className="w-4 h-4 mr-1.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
-                Izmeni
-                {pendingCommentsCount > 0 && (
-                  <span className="ml-1.5 px-1.5 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
-                    {pendingCommentsCount}
-                  </span>
-                )}
-              </Link>
-            </div>
-          )}
+      <div className="max-w-4xl mx-auto px-4 pt-28 sm:pt-32 pb-16">
+        {/* Owner Edit Button */}
+        {isOwner && (
+          <div className="flex justify-end mb-4">
+            <Link
+              to={`/memorijal/${memorial.id}/izmeni`}
+              className="btn-secondary text-sm"
+            >
+              Izmeni memorijal
+              {pendingCommentsCount > 0 && (
+                <span className="ml-2 px-2 py-0.5 text-xs font-medium bg-rose-light text-rose rounded-full">
+                  {pendingCommentsCount}
+                </span>
+              )}
+            </Link>
+          </div>
+        )}
 
-          {/* Profile Image */}
-          <div className="w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-6 rounded-full bg-gray-200 border-4 border-white shadow-lg overflow-hidden">
-            {memorial.profile_image_url ? (
-              <img
-                src={memorial.profile_image_url}
-                alt={`${memorial.first_name} ${memorial.last_name}`}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <svg
-                  className="w-16 h-16 sm:w-20 sm:h-20 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
+        {/* Name and Dates */}
+        <div className="text-center mb-8">
+          <h1 className="heading-display mb-3">
+            {memorial.first_name} {memorial.last_name}
+          </h1>
+          <p className="text-xl text-text-secondary font-light">
+            {memorial.birth_date && formatYear(memorial.birth_date)} – {memorial.death_date && formatYear(memorial.death_date)}
+          </p>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
+          {memorial.is_public && (
+            <button
+              onClick={() => setShowGiftPurchase(true)}
+              className="btn-primary flex items-center gap-2"
+            >
+              <FlowerIcon size={18} />
+              Pošaljite cveće
+            </button>
+          )}
+          <ShareButtons
+            url={`/memorijal/${memorial.id}`}
+            title={`${memorial.first_name} ${memorial.last_name}`}
+            description={memorial.biography ? memorial.biography.substring(0, 150) : `Memorijalna stranica za ${memorial.first_name} ${memorial.last_name}`}
+            type="memorial"
+            compact
+          />
+          <QRCodeGenerator
+            memorialId={memorial.id}
+            memorialName={`${memorial.first_name} ${memorial.last_name}`}
+            isUnlocked={false} // TODO: Proveriti iz baze da li je kupljen
+            onPurchase={() => {
+              // TODO: Stripe checkout
+              alert('Plaćanje će biti dostupno uskoro. Kontaktirajte nas za više informacija.')
+            }}
+          />
+        </div>
+
+        {/* ================================
+            SEKCIJA 1: OSNOVNI PODACI
+            ================================ */}
+        <div className="card p-6 sm:p-8 mb-8">
+          <div className="grid sm:grid-cols-2 gap-6">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-sand-light flex items-center justify-center flex-shrink-0">
+                <CalendarIcon size={18} className="text-text-secondary" />
+              </div>
+              <div>
+                <p className="caption mb-1">Rođen/a</p>
+                <p className="text-text-primary font-medium">
+                  {memorial.birth_date && formatDate(memorial.birth_date)}
+                </p>
+                {memorial.birth_place && (
+                  <p className="text-text-secondary text-sm">{memorial.birth_place}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-sand-light flex items-center justify-center flex-shrink-0">
+                <CalendarIcon size={18} className="text-text-secondary" />
+              </div>
+              <div>
+                <p className="caption mb-1">Preminuo/la</p>
+                <p className="text-text-primary font-medium">
+                  {memorial.death_date && formatDate(memorial.death_date)}
+                </p>
+                {memorial.death_place && (
+                  <p className="text-text-secondary text-sm">{memorial.death_place}</p>
+                )}
+              </div>
+            </div>
+
+            {memorial.burial_place && (
+              <div className="flex items-start gap-3 sm:col-span-2">
+                <div className="w-10 h-10 rounded-full bg-sand-light flex items-center justify-center flex-shrink-0">
+                  <LocationIcon size={18} className="text-text-secondary" />
+                </div>
+                <div>
+                  <p className="caption mb-1">Mesto sahrane</p>
+                  <p className="text-text-primary font-medium">{memorial.burial_place}</p>
+                </div>
               </div>
             )}
           </div>
 
-          {/* Name */}
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-gray-800 mb-2 tracking-wide">
-            {memorial.first_name.toUpperCase()} {memorial.last_name.toUpperCase()}
-          </h1>
-
-          {/* Dates */}
-          <p className="text-lg text-gray-600 font-light">
-            {formatShortDate(memorial.date_of_birth)} - {formatShortDate(memorial.date_of_death)}
-          </p>
-        </div>
-
-        {/* Info Card */}
-        <div className="bg-white shadow-sm rounded-lg p-6 sm:p-8 space-y-6">
-          {/* Birth and Death Places */}
-          <div className="grid sm:grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-1">
-                Mesto rodenja
-              </h3>
-              <p className="text-gray-800">{memorial.place_of_birth}</p>
-              <p className="text-sm text-gray-500">{formatDate(memorial.date_of_birth)}</p>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-1">
-                Mesto smrti
-              </h3>
-              <p className="text-gray-800">{memorial.place_of_death}</p>
-              <p className="text-sm text-gray-500">{formatDate(memorial.date_of_death)}</p>
-            </div>
-          </div>
-
-          {/* Parents Section */}
+          {/* Roditelji */}
           {(memorial.father_name || memorial.mother_name) && (
-            <div className="pt-6 border-t border-gray-100">
-              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-4">
-                Roditelji
-              </h3>
+            <div className="mt-8 pt-6 border-t border-border-light">
+              <p className="caption mb-4">Roditelji</p>
               <div className="grid sm:grid-cols-2 gap-4">
                 {memorial.father_name && (
-                  <div>
-                    <span className="text-gray-500 text-sm">Otac: </span>
-                    <span className="text-gray-800">{memorial.father_name}</span>
-                  </div>
+                  <p className="text-text-primary">
+                    <span className="text-text-secondary">Otac:</span> {memorial.father_name}
+                  </p>
                 )}
                 {memorial.mother_name && (
-                  <div>
-                    <span className="text-gray-500 text-sm">Majka: </span>
-                    <span className="text-gray-800">{memorial.mother_name}</span>
-                  </div>
+                  <p className="text-text-primary">
+                    <span className="text-text-secondary">Majka:</span> {memorial.mother_name}
+                    {memorial.mother_maiden_name && (
+                      <span className="text-text-muted"> (rođ. {memorial.mother_maiden_name})</span>
+                    )}
+                  </p>
                 )}
               </div>
             </div>
           )}
+        </div>
 
-          {/* Biography Section */}
-          <div className="pt-6 border-t border-gray-100">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-4">
-              Biografija
-            </h3>
+        {/* ================================
+            SEKCIJA 2: ŽIVOTNA PRIČA
+            ================================ */}
+        <div className="card p-6 sm:p-8 mb-8">
+          <h2 className="heading-2 mb-6">Životna priča</h2>
+          <div className="prose-memorial">
             <BiographyDisplay biography={memorial.biography} />
           </div>
         </div>
 
-        {/* Media Upload Section - Owner Only */}
-        {isOwner && (
-          <div className="bg-white shadow-sm rounded-lg p-6 sm:p-8 mt-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
-                Dodaj medije
-              </h3>
-              {!showUpload && (
-                <button
-                  onClick={() => setShowUpload(true)}
-                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-                >
-                  <svg
-                    className="w-4 h-4 mr-1.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  Dodaj fotografije, video ili dokumente
-                </button>
-              )}
-            </div>
-
-            {showUpload && (
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-sm font-medium text-gray-700">
-                    Dodavanje medija
-                  </h4>
-                  <button
-                    onClick={() => setShowUpload(false)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                    </svg>
-                  </button>
-                </div>
-                <MediaUpload
-                  memorialId={memorial.id}
-                  onUploadComplete={handleUploadComplete}
-                />
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Photo Gallery Section */}
-        {(images.length > 0 || !isOwner) && (
-          <div className="bg-white shadow-sm rounded-lg p-6 sm:p-8 mt-6">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-6">
+        {/* ================================
+            SEKCIJA 3: FOTOGRAFIJE (Freemium)
+            ================================ */}
+        <div className="card p-6 sm:p-8 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="heading-2 flex items-center gap-3">
+              <PhotoIcon size={24} className="text-sky" />
               Fotografije
-            </h3>
-            <PhotoGallery
-              media={images}
-              canEdit={!!isOwner}
-              onDelete={(id) => handleDeleteMedia(id, 'image')}
-            />
+            </h2>
+            <span className="text-sm text-white bg-sky px-3 py-1 rounded-full">
+              {placeholderPhotos.length} fotografija
+            </span>
           </div>
-        )}
 
-        {/* Video Section */}
-        {videos.length > 0 && (
-          <div className="bg-white shadow-sm rounded-lg p-6 sm:p-8 mt-6">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-6">
-              Video zapisi
+          {/* Grid fotografija */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            {placeholderPhotos.map((photo, index) => (
+              <div key={photo.id} className="relative group">
+                <div className="aspect-square rounded-lg overflow-hidden bg-sand-light">
+                  <img
+                    src={photo.url}
+                    alt={photo.caption}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                {/* Overlay sa zaključavanjem za demo */}
+                {index >= 2 && (
+                  <div className="absolute inset-0 bg-text-primary/60 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                    <LockIcon size={24} className="text-white" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Premium CTA */}
+          <div className="bg-sky-light/20 border-2 border-sky/30 rounded-lg p-5 text-center">
+            <LockIcon size={28} className="text-sky mx-auto mb-3" />
+            <h3 className="text-lg font-semibold text-text-primary mb-2">
+              Otključajte sve fotografije
             </h3>
-            <div className="space-y-6">
-              {videos.map((video) => (
-                <VideoPlayer
-                  key={video.id}
-                  video={video}
-                  canEdit={!!isOwner}
-                  onDelete={(id) => handleDeleteMedia(id, 'video')}
-                />
-              ))}
+            <p className="text-text-secondary mb-4">
+              Dodajte neograničen broj fotografija za trajno čuvanje uspomena
+            </p>
+            <button className="bg-sky hover:bg-sky-dark text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+              Nadogradite paket — 999 RSD
+            </button>
+          </div>
+        </div>
+
+        {/* ================================
+            SEKCIJA 4: VIDEO (Freemium)
+            ================================ */}
+        <div className="card p-6 sm:p-8 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="heading-2 flex items-center gap-3">
+              <VideoIcon size={24} className="text-rose" />
+              Video zapisi
+            </h2>
+          </div>
+
+          {/* Placeholder video */}
+          <div className="relative rounded-xl overflow-hidden bg-text-primary aspect-video mb-6">
+            <img
+              src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&q=80"
+              alt="Video placeholder"
+              className="w-full h-full object-cover opacity-50"
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+              <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur flex items-center justify-center mb-4">
+                <LockIcon size={32} className="text-white" />
+              </div>
+              <p className="text-lg font-medium">Video sadržaj je zaključan</p>
             </div>
           </div>
-        )}
 
-        {/* Documents Section */}
-        {documents.length > 0 && (
-          <div className="bg-white shadow-sm rounded-lg p-6 sm:p-8 mt-6">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-6">
-              Dokumenta
+          {/* Premium CTA */}
+          <div className="bg-rose-light/20 border-2 border-rose/30 rounded-lg p-5 text-center">
+            <VideoIcon size={28} className="text-rose mx-auto mb-3" />
+            <h3 className="text-lg font-semibold text-text-primary mb-2">
+              Dodajte video uspomene
             </h3>
-            <DocumentList
-              documents={documents}
-              canEdit={!!isOwner}
-              onDelete={(id) => handleDeleteMedia(id, 'document')}
-            />
+            <p className="text-text-secondary mb-4">
+              Sačuvajte dragocene video zapise sa porodičnih okupljanja i posebnih trenutaka
+            </p>
+            <button className="bg-rose hover:bg-rose-dark text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+              Aktivirajte video — 1499 RSD
+            </button>
           </div>
-        )}
+        </div>
 
-        {/* Gifts Section */}
-        {memorial.is_active && (
-          <div className="bg-white shadow-sm rounded-lg p-6 sm:p-8 mt-6">
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-6">
-              Pokloni
-            </h3>
-
-            {/* Payment success message */}
+        {/* ================================
+            SEKCIJA 5: POKLONI
+            ================================ */}
+        {memorial.is_public && (
+          <div className="card p-6 sm:p-8 mb-8">
+            {/* Payment Success Message */}
             {paymentSuccess && (
-              <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-green-800 font-medium">Hvala na poklonu! Vas poklon je uspesno dodat.</span>
-                </div>
+              <div className="alert-success flex items-center gap-3 mb-6">
+                <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Hvala na poklonu! Vaš poklon je uspešno dodat.</span>
               </div>
             )}
 
-            {/* Gift display */}
+            <h2 className="heading-2 mb-6">Pokloni</h2>
             <GiftDisplay gifts={gifts} />
 
-            {/* Gift purchase */}
-            <div className="mt-6 pt-6 border-t border-gray-100">
+            <div className="mt-8 pt-6 border-t border-border-light">
               {showGiftPurchase ? (
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-sm font-medium text-gray-700">
-                      Izaberite poklon
-                    </h4>
+                    <h3 className="heading-3">Izaberite poklon</h3>
                     <button
                       onClick={() => setShowGiftPurchase(false)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="btn-ghost"
                     >
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                      </svg>
+                      Zatvori
                     </button>
                   </div>
                   <GiftCatalog
@@ -483,51 +482,34 @@ export default function Memorial() {
               ) : (
                 <button
                   onClick={() => setShowGiftPurchase(true)}
-                  className="w-full px-4 py-3 text-sm font-medium text-amber-800 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors border border-amber-200"
+                  className="w-full py-4 text-center text-white font-medium bg-sky hover:bg-sky-dark rounded-lg transition-colors"
                 >
-                  <svg
-                    className="w-5 h-5 inline-block mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M12 2c-.5 2-2 3-2 5 0 1.5 1 2.5 2 2.5s2-1 2-2.5c0-2-1.5-3-2-5z"
-                      fill="#F59E0B"
-                    />
-                    <rect x="10" y="9" width="4" height="12" rx="1" fill="#FEF3C7" />
-                  </svg>
-                  Zapalite svecu ili polozite cvece
+                  <FlowerIcon size={20} className="inline-block mr-2 -mt-0.5" />
+                  Zapalite sveću ili položite cveće
                 </button>
               )}
             </div>
           </div>
         )}
 
-        {/* Comments Section */}
-        <div className="bg-white shadow-sm rounded-lg p-6 sm:p-8 mt-6">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-6">
-            Posvete i secanja
-          </h3>
-
-          {/* Comment List */}
+        {/* ================================
+            SEKCIJA 6: KNJIGA SEĆANJA
+            ================================ */}
+        <div className="card p-6 sm:p-8">
+          <h2 className="heading-2 mb-6">Knjiga sećanja</h2>
           <CommentList comments={comments} loading={commentsLoading} />
 
-          {/* Comment Form */}
-          {memorial.is_active && (
-            <div className="mt-8 pt-6 border-t border-gray-100">
+          {memorial.is_public && (
+            <div className="mt-8 pt-6 border-t border-border-light">
               {showCommentForm ? (
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-sm font-medium text-gray-700">
-                      Ostavite posvetu
-                    </h4>
+                    <h3 className="heading-3">Ostavite posvetu</h3>
                     <button
                       onClick={() => setShowCommentForm(false)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="btn-ghost"
                     >
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                      </svg>
+                      Zatvori
                     </button>
                   </div>
                   <CommentForm
@@ -541,22 +523,9 @@ export default function Memorial() {
               ) : (
                 <button
                   onClick={() => setShowCommentForm(true)}
-                  className="w-full px-4 py-3 text-sm font-medium text-gray-700 bg-stone-50 rounded-lg hover:bg-stone-100 transition-colors border border-stone-200"
+                  className="w-full py-4 text-center text-white font-medium bg-sage hover:bg-sage-dark rounded-lg transition-colors"
                 >
-                  <svg
-                    className="w-5 h-5 inline-block mr-2 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                    />
-                  </svg>
-                  Ostavite posvetu ili secanje
+                  Ostavite posvetu ili sećanje
                 </button>
               )}
             </div>

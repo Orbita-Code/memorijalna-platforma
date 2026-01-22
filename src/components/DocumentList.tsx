@@ -6,16 +6,6 @@ interface DocumentListProps {
   onDelete?: (mediaId: string) => void
 }
 
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) {
-    return bytes + ' B'
-  } else if (bytes < 1024 * 1024) {
-    return (bytes / 1024).toFixed(1) + ' KB'
-  } else {
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
-  }
-}
-
 export default function DocumentList({ documents, canEdit = false, onDelete }: DocumentListProps) {
   const handleDelete = (e: React.MouseEvent, mediaId: string) => {
     e.preventDefault()
@@ -70,10 +60,10 @@ export default function DocumentList({ documents, canEdit = false, onDelete }: D
           {/* File Info */}
           <div className="flex-1 min-w-0">
             <p className="text-gray-800 font-medium truncate">
-              {doc.caption || doc.filename}
+              {doc.caption || 'Dokument'}
             </p>
             <p className="text-gray-500 text-sm">
-              {formatFileSize(doc.size)}
+              PDF
             </p>
           </div>
 

@@ -1,5 +1,9 @@
 import { supabase } from './supabase'
 import type { Obituary, CreateObituaryInput, UpdateObituaryInput } from '../types/obituary'
+import { placeholderObituaries } from '../data/placeholders'
+
+// Privremeno koristi placeholder podatke dok se ne popuni baza
+const USE_PLACEHOLDERS = true
 
 export async function createObituary(
   input: CreateObituaryInput,
@@ -38,6 +42,11 @@ export async function createObituary(
 export async function getObituaryById(
   id: string
 ): Promise<{ data: Obituary | null; error: Error | null }> {
+  if (USE_PLACEHOLDERS) {
+    const obituary = placeholderObituaries.find(o => o.id === id)
+    return { data: obituary || null, error: obituary ? null : new Error('Umrlica nije pronađena') }
+  }
+
   const { data, error } = await supabase
     .from('obituaries')
     .select('*')
@@ -50,6 +59,14 @@ export async function getObituaryById(
 export async function getRecentObituaries(
   limit = 20
 ): Promise<{ data: Obituary[] | null; error: Error | null }> {
+  if (USE_PLACEHOLDERS) {
+    const published = placeholderObituaries
+      .filter(o => o.status === 'published')
+      .sort((a, b) => new Date(b.published_at || '').getTime() - new Date(a.published_at || '').getTime())
+      .slice(0, limit)
+    return { data: published, error: null }
+  }
+
   const { data, error } = await supabase
     .from('obituaries')
     .select('*')

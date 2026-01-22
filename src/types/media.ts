@@ -4,14 +4,10 @@ export interface MediaItem {
   id: string
   created_at: string
   memorial_id: string
-  user_id: string
   type: MediaType
   url: string
-  filename: string
-  size: number // bytes
-  mime_type: string
   caption: string | null
-  order: number // for sorting in gallery
+  display_order: number // for sorting in gallery
 }
 
 export interface UploadMediaInput {

@@ -1,10 +1,32 @@
 import { supabase } from './supabase'
 import type { Gift, CreateGiftInput } from '../types/gift'
+import { placeholderGifts } from '../data/placeholders'
+
+// Privremeno koristi placeholder podatke dok se ne popuni baza
+const USE_PLACEHOLDERS = true
 
 export async function createGift(
   input: CreateGiftInput,
   paymentId?: string
 ): Promise<{ data: Gift | null; error: Error | null }> {
+  // Za placeholder mode, simuliraj uspešno kreiranje
+  if (USE_PLACEHOLDERS) {
+    const newGift: Gift = {
+      id: `gift-${Date.now()}`,
+      memorial_id: input.memorial_id,
+      product_id: input.product_id,
+      sender_name: input.sender_name,
+      sender_message: input.sender_message || null,
+      is_anonymous: input.is_anonymous || false,
+      payment_status: 'completed', // U demo modu, automatski completed
+      stripe_payment_id: paymentId || null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+    placeholderGifts.push(newGift)
+    return { data: newGift, error: null }
+  }
+
   const { data, error } = await supabase
     .from('gifts')
     .insert({
@@ -25,6 +47,13 @@ export async function createGift(
 export async function getMemorialGifts(
   memorialId: string
 ): Promise<{ data: Gift[] | null; error: Error | null }> {
+  if (USE_PLACEHOLDERS) {
+    const gifts = placeholderGifts
+      .filter(g => g.memorial_id === memorialId && g.payment_status === 'completed')
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    return { data: gifts, error: null }
+  }
+
   const { data, error } = await supabase
     .from('gifts')
     .select('*')

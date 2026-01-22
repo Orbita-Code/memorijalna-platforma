@@ -70,10 +70,10 @@ function calculateSimilarity(
   input: {
     first_name: string
     last_name: string
-    date_of_birth?: string
-    date_of_death: string
-    place_of_birth?: string
-    place_of_death?: string
+    birth_date?: string
+    death_date: string
+    birth_place?: string
+    death_place?: string
   },
   memorial: Memorial
 ): { score: number; matchedFields: string[] } {
@@ -93,15 +93,15 @@ function calculateSimilarity(
   weights += 40
 
   // Date of death matching (high weight)
-  if (datesMatch(input.date_of_death, memorial.date_of_death)) {
+  if (datesMatch(input.death_date, memorial.death_date)) {
     matchedFields.push('datum smrti')
     totalScore += 30
   }
   weights += 30
 
   // Date of birth matching (medium weight)
-  if (input.date_of_birth && memorial.date_of_birth) {
-    if (datesMatch(input.date_of_birth, memorial.date_of_birth)) {
+  if (input.birth_date && memorial.birth_date) {
+    if (datesMatch(input.birth_date, memorial.birth_date)) {
       matchedFields.push('datum rodjenja')
       totalScore += 20
     }
@@ -109,8 +109,8 @@ function calculateSimilarity(
   weights += 20
 
   // Place matching (lower weight)
-  if (input.place_of_birth && memorial.place_of_birth) {
-    const placeSim = stringSimilarity(input.place_of_birth, memorial.place_of_birth)
+  if (input.birth_place && memorial.birth_place) {
+    const placeSim = stringSimilarity(input.birth_place, memorial.birth_place)
     if (placeSim > 0.7) {
       matchedFields.push('mesto rodjenja')
       totalScore += placeSim * 5
@@ -118,8 +118,8 @@ function calculateSimilarity(
   }
   weights += 5
 
-  if (input.place_of_death && memorial.place_of_death) {
-    const placeSim = stringSimilarity(input.place_of_death, memorial.place_of_death)
+  if (input.death_place && memorial.death_place) {
+    const placeSim = stringSimilarity(input.death_place, memorial.death_place)
     if (placeSim > 0.7) {
       matchedFields.push('mesto smrti')
       totalScore += placeSim * 5
@@ -136,12 +136,12 @@ function calculateSimilarity(
 export async function findPotentialDuplicates(input: {
   first_name: string
   last_name: string
-  date_of_birth?: string
-  date_of_death: string
-  place_of_birth?: string
-  place_of_death?: string
+  birth_date?: string
+  death_date: string
+  birth_place?: string
+  death_place?: string
 }): Promise<DuplicateMatch[]> {
-  if (!input.first_name || !input.last_name || !input.date_of_death) {
+  if (!input.first_name || !input.last_name || !input.death_date) {
     return []
   }
 

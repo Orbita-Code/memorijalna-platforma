@@ -1,9 +1,33 @@
 import { supabase } from './supabase'
 import type { Comment, CreateCommentInput, CommentStatus } from '../types/comment'
+import { placeholderComments } from '../data/placeholders'
+
+// Privremeno koristi placeholder podatke dok se ne popuni baza
+const USE_PLACEHOLDERS = true
 
 export async function createComment(
   input: CreateCommentInput
 ): Promise<{ data: Comment | null; error: Error | null }> {
+  // Za placeholder mode, simuliraj uspešno kreiranje
+  if (USE_PLACEHOLDERS) {
+    const newComment: Comment = {
+      id: `comment-${Date.now()}`,
+      memorial_id: input.memorial_id,
+      author_name: input.author_name,
+      author_email: input.author_email || null,
+      content: input.content,
+      is_anonymous: input.is_anonymous || false,
+      status: 'pending',
+      moderation_note: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+    // U demo modu, automatski odobri komentar za prikaz
+    newComment.status = 'approved'
+    placeholderComments.push(newComment)
+    return { data: newComment, error: null }
+  }
+
   const { data, error } = await supabase
     .from('comments')
     .insert({
@@ -23,6 +47,13 @@ export async function createComment(
 export async function getApprovedComments(
   memorialId: string
 ): Promise<{ data: Comment[] | null; error: Error | null }> {
+  if (USE_PLACEHOLDERS) {
+    const approved = placeholderComments
+      .filter(c => c.memorial_id === memorialId && c.status === 'approved')
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    return { data: approved, error: null }
+  }
+
   const { data, error } = await supabase
     .from('comments')
     .select('*')

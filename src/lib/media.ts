@@ -3,8 +3,7 @@ import type { MediaItem, UploadMediaInput } from '../types/media'
 import { uploadFile, getMediaType } from './storage'
 
 export async function addMedia(
-  input: UploadMediaInput,
-  userId: string
+  input: UploadMediaInput
 ): Promise<{ data: MediaItem | null; error: Error | null }> {
   // Upload file first
   const { url, error: uploadError } = await uploadFile(input.memorial_id, input.file)
@@ -12,29 +11,25 @@ export async function addMedia(
     return { data: null, error: uploadError }
   }
 
-  // Get max order for this memorial
+  // Get max display_order for this memorial
   const { data: existing } = await supabase
     .from('media')
-    .select('order')
+    .select('display_order')
     .eq('memorial_id', input.memorial_id)
-    .order('order', { ascending: false })
+    .order('display_order', { ascending: false })
     .limit(1)
 
-  const nextOrder = existing && existing.length > 0 ? existing[0].order + 1 : 0
+  const nextOrder = existing && existing.length > 0 ? (existing[0].display_order || 0) + 1 : 0
 
   // Insert media record
   const { data, error } = await supabase
     .from('media')
     .insert({
       memorial_id: input.memorial_id,
-      user_id: userId,
       type: getMediaType(input.file.type)!,
       url,
-      filename: input.file.name,
-      size: input.file.size,
-      mime_type: input.file.type,
       caption: input.caption || null,
-      order: nextOrder,
+      display_order: nextOrder,
     })
     .select()
     .single()
@@ -49,7 +44,7 @@ export async function getMemorialMedia(
     .from('media')
     .select('*')
     .eq('memorial_id', memorialId)
-    .order('order', { ascending: true })
+    .order('display_order', { ascending: true })
 
   return { data, error }
 }

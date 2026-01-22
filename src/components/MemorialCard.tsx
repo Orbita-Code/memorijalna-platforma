@@ -1,52 +1,66 @@
 import { Link } from 'react-router-dom'
 import type { Memorial } from '../types/memorial'
+import { EternalFlame } from './icons/ReligiousSymbols'
 
 interface MemorialCardProps {
   memorial: Memorial
 }
 
 export default function MemorialCard({ memorial }: MemorialCardProps) {
-  const initials = `${memorial.first_name[0]}${memorial.last_name[0]}`
-  const birthYear = new Date(memorial.date_of_birth).getFullYear()
-  const deathYear = new Date(memorial.date_of_death).getFullYear()
+  const birthYear = memorial.birth_date ? new Date(memorial.birth_date).getFullYear() : null
+  const deathYear = memorial.death_date ? new Date(memorial.death_date).getFullYear() : null
 
   return (
     <Link
       to={`/memorijal/${memorial.id}`}
-      className="block bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200"
+      className="card card-hover block overflow-hidden group"
     >
-      <div className="flex items-center gap-4">
-        {/* Profile image placeholder */}
-        {memorial.profile_image_url ? (
+      {/* Cover image or gradient */}
+      <div className="h-24 relative">
+        {memorial.cover_image_url ? (
           <img
-            src={memorial.profile_image_url}
-            alt={`${memorial.first_name} ${memorial.last_name}`}
-            className="w-16 h-16 rounded-full object-cover"
+            src={memorial.cover_image_url}
+            alt=""
+            className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-            <span className="text-xl font-semibold text-gray-500">
-              {initials}
-            </span>
-          </div>
+          <div className="w-full h-full bg-gradient-to-br from-sky-light via-sand to-sand-light" />
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
+      </div>
 
-        <div className="flex-1 min-w-0">
-          {/* Name */}
-          <h3 className="text-lg font-semibold text-gray-900 truncate">
-            {memorial.first_name} {memorial.last_name}
-          </h3>
-
-          {/* Dates */}
-          <p className="text-sm text-gray-600">
-            {birthYear} - {deathYear}
-          </p>
-
-          {/* Place of death */}
-          <p className="text-sm text-gray-500 truncate">
-            {memorial.place_of_death}
-          </p>
+      <div className="px-5 pb-5 -mt-8 relative">
+        {/* Profile image */}
+        <div className="mb-3">
+          {memorial.profile_image_url ? (
+            <img
+              src={memorial.profile_image_url}
+              alt={`${memorial.first_name} ${memorial.last_name}`}
+              className="w-16 h-16 rounded-full object-cover border-3 border-white shadow-soft"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-sand-light border-3 border-white shadow-soft flex items-center justify-center">
+              <EternalFlame size={24} className="text-rose" />
+            </div>
+          )}
         </div>
+
+        {/* Name */}
+        <h3 className="font-serif text-lg font-semibold text-text-primary truncate group-hover:text-sky-dark transition-colors">
+          {memorial.first_name} {memorial.last_name}
+        </h3>
+
+        {/* Dates */}
+        <p className="text-sm text-text-secondary mt-1">
+          {birthYear || '?'} – {deathYear || '?'}
+        </p>
+
+        {/* Place of death */}
+        {memorial.death_place && (
+          <p className="text-sm text-text-muted truncate mt-1">
+            {memorial.death_place}
+          </p>
+        )}
       </div>
     </Link>
   )

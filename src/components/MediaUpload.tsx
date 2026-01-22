@@ -120,14 +120,11 @@ export default function MediaUpload({ memorialId, onUploadComplete }: MediaUploa
     const errors: string[] = []
 
     for (const fileWithPreview of validFiles) {
-      const { error: uploadError } = await addMedia(
-        {
-          memorial_id: memorialId,
-          file: fileWithPreview.file,
-          caption: fileWithPreview.caption || undefined,
-        },
-        user.id
-      )
+      const { error: uploadError } = await addMedia({
+        memorial_id: memorialId,
+        file: fileWithPreview.file,
+        caption: fileWithPreview.caption || undefined,
+      })
 
       if (uploadError) {
         errors.push(`${fileWithPreview.file.name}: ${uploadError.message}`)

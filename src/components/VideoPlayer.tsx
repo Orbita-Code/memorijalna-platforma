@@ -34,9 +34,6 @@ export default function VideoPlayer({ video, canEdit = false, onDelete }: VideoP
           />
         </svg>
         <p className="text-gray-500">Video nije moguce ucitati</p>
-        {video.filename && (
-          <p className="text-gray-400 text-sm mt-1">{video.filename}</p>
-        )}
       </div>
     )
   }
@@ -49,7 +46,7 @@ export default function VideoPlayer({ video, canEdit = false, onDelete }: VideoP
         preload="metadata"
         onError={() => setHasError(true)}
       >
-        <source src={video.url} type={video.mime_type} />
+        <source src={video.url} />
         Vas pregledac ne podrzava video.
       </video>
 

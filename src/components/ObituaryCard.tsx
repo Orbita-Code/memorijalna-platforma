@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { Obituary } from '../types/obituary'
+import { EternalFlame } from './icons/ReligiousSymbols'
+import { LocationIcon, CalendarIcon, HeartIcon } from './icons/FeatureIcons'
 
 interface ObituaryCardProps {
   obituary: Obituary
@@ -28,49 +30,56 @@ export default function ObituaryCard({ obituary }: ObituaryCardProps) {
   return (
     <Link
       to={`/umrlica/${obituary.id}`}
-      className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden border border-gray-200"
+      className="card card-hover block overflow-hidden group"
     >
       {/* Header */}
-      <div className="bg-gray-900 text-white p-4 text-center">
-        <div className="text-xl mb-1">&#10013;</div>
-        <h3 className="text-lg font-serif">
+      <div className="bg-gradient-to-b from-sand to-sand-light p-6 text-center border-b border-border-light">
+        <div className="mb-3">
+          <EternalFlame size={28} className="text-rose mx-auto" />
+        </div>
+        <h3 className="font-serif text-xl text-text-primary group-hover:text-sky-dark transition-colors">
           {obituary.first_name} {obituary.last_name}
         </h3>
-        <p className="text-gray-400 text-sm">
-          {obituary.date_of_birth && `${formatShortDate(obituary.date_of_birth)} - `}
+        <p className="text-text-secondary text-sm mt-1">
+          {obituary.date_of_birth && `${formatShortDate(obituary.date_of_birth)} – `}
           {formatShortDate(obituary.date_of_death)}
         </p>
       </div>
 
       {/* Content */}
-      <div className="p-4">
+      <div className="p-5">
         {obituary.place_of_death && (
-          <p className="text-gray-600 text-sm mb-2">
-            &#128205; {obituary.place_of_death}
-          </p>
+          <div className="flex items-center gap-2 text-text-secondary text-sm mb-3">
+            <LocationIcon size={16} className="text-text-muted flex-shrink-0" />
+            <span>{obituary.place_of_death}</span>
+          </div>
         )}
 
         {hasFuneralInfo && (
-          <div className="bg-gray-50 rounded p-3 mt-2">
-            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Sahrana</p>
+          <div className="bg-sand-light rounded-lg p-4 mt-2">
+            <p className="caption mb-2">Sahrana</p>
             {obituary.funeral_date && (
-              <p className="text-sm text-gray-700">
-                &#128197; {formatDate(obituary.funeral_date)}
-                {obituary.funeral_time && ` u ${obituary.funeral_time.substring(0, 5)}h`}
-              </p>
+              <div className="flex items-center gap-2 text-sm text-text-primary">
+                <CalendarIcon size={16} className="text-text-muted flex-shrink-0" />
+                <span>
+                  {formatDate(obituary.funeral_date)}
+                  {obituary.funeral_time && ` u ${obituary.funeral_time.substring(0, 5)}h`}
+                </span>
+              </div>
             )}
             {obituary.funeral_location && (
-              <p className="text-sm text-gray-600 mt-1">
-                {obituary.funeral_location}
-              </p>
+              <div className="flex items-center gap-2 text-sm text-text-secondary mt-2">
+                <LocationIcon size={16} className="text-text-muted flex-shrink-0" />
+                <span>{obituary.funeral_location}</span>
+              </div>
             )}
           </div>
         )}
 
         {obituary.donations_enabled && (
-          <div className="mt-3 flex items-center gap-1 text-blue-600 text-sm">
-            <span>&#128150;</span>
-            <span>Donacije omogucene</span>
+          <div className="mt-4 flex items-center gap-2 text-sky-dark text-sm font-medium">
+            <HeartIcon size={16} className="text-rose" />
+            <span>Donacije omogućene</span>
           </div>
         )}
       </div>

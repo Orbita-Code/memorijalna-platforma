@@ -13,6 +13,7 @@ export interface GiftProduct {
 export interface Gift {
   id: string
   created_at: string
+  updated_at: string
   memorial_id: string
   product_id: string
   sender_name: string

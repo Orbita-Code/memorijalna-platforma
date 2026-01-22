@@ -51,6 +51,10 @@ export interface Obituary {
   // Status
   status: ObituaryStatus
   published_at?: string | null
+
+  // Notifikacije - email na koji porodica prima saučešća
+  notification_email?: string | null
+  condolences_enabled: boolean
 }
 
 export interface CreateObituaryInput {
@@ -71,6 +75,9 @@ export interface CreateObituaryInput {
   donation_goal_cents?: number
   donation_charity_name?: string
   donation_charity_description?: string
+  // Saučešća
+  condolences_enabled?: boolean
+  notification_email?: string
 }
 
 export interface UpdateObituaryInput {
@@ -91,4 +98,7 @@ export interface UpdateObituaryInput {
   donation_charity_name?: string | null
   donation_charity_description?: string | null
   status?: ObituaryStatus
+  // Saučešća
+  condolences_enabled?: boolean
+  notification_email?: string | null
 }

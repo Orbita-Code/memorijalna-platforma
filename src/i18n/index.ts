@@ -2,7 +2,7 @@ import { sr } from './locales/sr'
 import type { TranslationKeys } from './locales/sr'
 import { en } from './locales/en'
 
-export type Language = 'sr' | 'en' | 'hr' | 'bs' | 'sl' | 'mk' | 'bg' | 'de' | 'fr' | 'it' | 'es'
+export type Language = 'sr' | 'en' | 'hr' | 'bs' | 'sl' | 'mk' | 'bg' | 'ru' | 'uk' | 'de' | 'fr' | 'it' | 'es'
 
 export interface LanguageInfo {
   code: Language
@@ -16,13 +16,15 @@ export const languages: LanguageInfo[] = [
   { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧' },
   { code: 'hr', name: 'Croatian', nativeName: 'Hrvatski', flag: '🇭🇷' },
   { code: 'bs', name: 'Bosnian', nativeName: 'Bosanski', flag: '🇧🇦' },
-  { code: 'sl', name: 'Slovenian', nativeName: 'Slovenscina', flag: '🇸🇮' },
-  { code: 'mk', name: 'Macedonian', nativeName: 'Makedonski', flag: '🇲🇰' },
-  { code: 'bg', name: 'Bulgarian', nativeName: 'Bulgarski', flag: '🇧🇬' },
+  { code: 'sl', name: 'Slovenian', nativeName: 'Slovenščina', flag: '🇸🇮' },
+  { code: 'mk', name: 'Macedonian', nativeName: 'Македонски', flag: '🇲🇰' },
+  { code: 'bg', name: 'Bulgarian', nativeName: 'Български', flag: '🇧🇬' },
+  { code: 'ru', name: 'Russian', nativeName: 'Русский', flag: '🇷🇺' },
+  { code: 'uk', name: 'Ukrainian', nativeName: 'Українська', flag: '🇺🇦' },
   { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪' },
-  { code: 'fr', name: 'French', nativeName: 'Francais', flag: '🇫🇷' },
+  { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷' },
   { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹' },
-  { code: 'es', name: 'Spanish', nativeName: 'Espanol', flag: '🇪🇸' },
+  { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸' },
 ]
 
 const translations: Record<Language, TranslationKeys> = {
@@ -33,7 +35,9 @@ const translations: Record<Language, TranslationKeys> = {
   bs: sr, // Bosnian - very similar to Serbian
   sl: sr, // Slovenian - fallback to Serbian for now
   mk: sr, // Macedonian - similar to Serbian
-  bg: sr, // Bulgarian - fallback to Serbian for now
+  bg: sr, // Bulgarian - Cyrillic, fallback to Serbian for now
+  ru: sr, // Russian - Cyrillic, fallback to Serbian for now
+  uk: sr, // Ukrainian - Cyrillic, fallback to Serbian for now
   de: en, // German - fallback to English
   fr: en, // French - fallback to English
   it: en, // Italian - fallback to English

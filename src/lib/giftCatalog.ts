@@ -6,18 +6,18 @@ export const giftCatalog: GiftProduct[] = [
   {
     id: 'candle-1',
     type: 'candle',
-    name: 'Sveca',
-    description: 'Zapalite virtualnu svecu u znak secanja',
-    price_cents: 99,
+    name: 'Sveća',
+    description: 'Zapalite virtualnu sveću u znak sećanja',
+    price_cents: 200, // 2.00 EUR
     image_url: '/gifts/candle.svg',
     is_active: true,
   },
   {
     id: 'flower-1',
     type: 'flower',
-    name: 'Buket cveca',
-    description: 'Polozite virtualno cvece na memorijal',
-    price_cents: 299,
+    name: 'Buket cveća',
+    description: 'Položite virtualno cveće na memorijal',
+    price_cents: 399, // 3.99 EUR
     image_url: '/gifts/flower.svg',
     is_active: true,
   },
@@ -25,8 +25,8 @@ export const giftCatalog: GiftProduct[] = [
     id: 'wreath-1',
     type: 'wreath',
     name: 'Venac',
-    description: 'Polozite virtualni venac kao znak postovanja',
-    price_cents: 499,
+    description: 'Položite virtualni venac kao znak poštovanja',
+    price_cents: 499, // 4.99 EUR
     image_url: '/gifts/wreath.svg',
     is_active: true,
   },
@@ -35,7 +35,7 @@ export const giftCatalog: GiftProduct[] = [
     type: 'cross',
     name: 'Krst',
     description: 'Postavite virtualni krst na memorijal',
-    price_cents: 199,
+    price_cents: 249, // 2.49 EUR
     image_url: '/gifts/cross.svg',
     is_active: true,
   },

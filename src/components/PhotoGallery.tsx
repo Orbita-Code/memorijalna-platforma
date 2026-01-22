@@ -107,7 +107,7 @@ export default function PhotoGallery({ media, canEdit = false, onDelete }: Photo
           >
             <img
               src={image.url}
-              alt={image.caption || image.filename}
+              alt={image.caption || 'Fotografija'}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
             />
@@ -193,7 +193,7 @@ export default function PhotoGallery({ media, canEdit = false, onDelete }: Photo
           >
             <img
               src={selectedImage.url}
-              alt={selectedImage.caption || selectedImage.filename}
+              alt={selectedImage.caption || 'Fotografija'}
               className="max-w-full max-h-[80vh] object-contain"
             />
 
