@@ -41,6 +41,9 @@ const DataSecurity = lazy(() => import('./pages/DataSecurity'))
 const DonationSetup = lazy(() => import('./pages/DonationSetup'))
 const Charities = lazy(() => import('./pages/Charities'))
 
+// Gamification pages - lazy loaded
+const Stats = lazy(() => import('./pages/Stats'))
+
 // Static pages - lazy loaded
 const About = lazy(() => import('./pages/About'))
 const HowItWorks = lazy(() => import('./pages/HowItWorks'))
@@ -171,6 +174,13 @@ function App() {
         <Route path="dobrotvorne-organizacije" element={
           <Suspense fallback={<PageLoader />}>
             <Charities />
+          </Suspense>
+        } />
+
+        {/* Gamification */}
+        <Route path="estadistiques" element={
+          <Suspense fallback={<PageLoader />}>
+            <Stats />
           </Suspense>
         } />
 
