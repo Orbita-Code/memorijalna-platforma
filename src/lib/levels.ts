@@ -8,18 +8,18 @@ export interface Level {
 }
 
 export const LEVELS: Level[] = [
-  { level: 1,  name: "Aprenent d'Heroi",  emoji: '🦸', xpRequired: 0,     power: 'Coratge',         image: '/illustrations/heroi-1.webp' },
-  { level: 2,  name: 'Superfort',          emoji: '💪', xpRequired: 100,   power: 'Superforça',      image: '/illustrations/heroi-2.webp' },
-  { level: 3,  name: 'Superràpid',         emoji: '💨', xpRequired: 300,   power: 'Supervelocitat',  image: '/illustrations/heroi-3.webp' },
-  { level: 4,  name: 'Volador',            emoji: '🦅', xpRequired: 600,   power: 'Vol',             image: '/illustrations/heroi-4.webp' },
-  { level: 5,  name: 'Invisible',          emoji: '👻', xpRequired: 1000,  power: 'Invisibilitat',   image: '/illustrations/heroi-5.webp' },
-  { level: 6,  name: 'Llampec',            emoji: '⚡', xpRequired: 1500,  power: 'Llamps',          image: '/illustrations/heroi-6.webp' },
-  { level: 7,  name: 'Flamarada',          emoji: '🔥', xpRequired: 2200,  power: 'Foc',             image: '/illustrations/heroi-7.webp' },
-  { level: 8,  name: 'Glacial',            emoji: '❄️', xpRequired: 3000,  power: 'Gel',             image: '/illustrations/heroi-8.webp' },
-  { level: 9,  name: 'Mag',                emoji: '🔮', xpRequired: 4000,  power: 'Màgia',           image: '/illustrations/heroi-9.webp' },
-  { level: 10, name: 'Guardià',            emoji: '🛡️', xpRequired: 5500,  power: 'Protecció',       image: '/illustrations/heroi-10.webp' },
-  { level: 11, name: 'Capità Estrella',    emoji: '⭐', xpRequired: 7500,  power: 'Lideratge',       image: '/illustrations/heroi-11.webp' },
-  { level: 12, name: 'Superheroi Suprem',  emoji: '🌟', xpRequired: 10000, power: 'Tots els poders', image: '/illustrations/heroi-12.webp' },
+  { level: 1,  name: "Aprenent d'Heroi",  emoji: '🦸', xpRequired: 0,     power: 'Coratge',         image: '/illustrations/estrella-1.webp' },
+  { level: 2,  name: 'Superfort',          emoji: '💪', xpRequired: 100,   power: 'Superforça',      image: '/illustrations/estrella-2.webp' },
+  { level: 3,  name: 'Superràpid',         emoji: '💨', xpRequired: 300,   power: 'Supervelocitat',  image: '/illustrations/estrella-3.webp' },
+  { level: 4,  name: 'Volador',            emoji: '🦅', xpRequired: 600,   power: 'Vol',             image: '/illustrations/estrella-4.webp' },
+  { level: 5,  name: 'Invisible',          emoji: '👻', xpRequired: 1000,  power: 'Invisibilitat',   image: '/illustrations/estrella-5.webp' },
+  { level: 6,  name: 'Llampec',            emoji: '⚡', xpRequired: 1500,  power: 'Llamps',          image: '/illustrations/estrella-6.webp' },
+  { level: 7,  name: 'Flamarada',          emoji: '🔥', xpRequired: 2200,  power: 'Foc',             image: '/illustrations/estrella-7.webp' },
+  { level: 8,  name: 'Glacial',            emoji: '❄️', xpRequired: 3000,  power: 'Gel',             image: '/illustrations/estrella-8.webp' },
+  { level: 9,  name: 'Mag',                emoji: '🔮', xpRequired: 4000,  power: 'Màgia',           image: '/illustrations/estrella-9.webp' },
+  { level: 10, name: 'Guardià',            emoji: '🛡️', xpRequired: 5500,  power: 'Protecció',       image: '/illustrations/estrella-10.webp' },
+  { level: 11, name: 'Capità Estrella',    emoji: '⭐', xpRequired: 7500,  power: 'Lideratge',       image: '/illustrations/estrella-11.webp' },
+  { level: 12, name: 'Superheroi Suprem',  emoji: '🌟', xpRequired: 10000, power: 'Tots els poders', image: '/illustrations/estrella-12.webp' },
 ]
 
 export function getLevelForXP(xp: number): Level {
